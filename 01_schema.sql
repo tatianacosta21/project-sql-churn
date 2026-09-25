@@ -12,10 +12,9 @@ CREATE TABLE IF NOT EXISTS orders (
     customer_id INTEGER NOT NULL -- "customer_id" column: number identifying which customer placed the order
         REFERENCES customers(id), -- ensures this number must be an "id" that already exists in the "customer" table (prevents "orphan" orders)
     order_date DATE NOT NULL, -- "order_date" column: date the order was placed; mandatory
-    amount NUMERIC(10, 2) NOT NULL  -- "amount" column: decimal number with up to 10 total digits and 2 decimal places (e.g., 12345678.90)
+    amount NUMERIC(10, 2) NOT NULL -- "amount" column: decimal number with up to 10 total digits and 2 decimal places (e.g., 12345678.90)
         CHECK (amount > 0) -- extra rule: prevents registering an order with a zero or negative value
 );
 
 -- ------------------------------------------------------------------------------------
 -- SERIAL: it is a handy shortcut that creates a column of auto-incrementing integers.
--- ------------------------------------------------------------------------------------
