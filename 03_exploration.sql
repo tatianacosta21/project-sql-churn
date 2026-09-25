@@ -7,12 +7,47 @@ SELECT
     (SELECT ROUND(SUM(amount), 2) FROM orders) AS total_revenue, -- sums the amount of every order
     (SELECT ROUND(AVG(amount), 2) FROM orders) AS average_order_value; -- calculates the average order amount
 
--- Revenue and order count per costumer
+-- Revenue and order count per customer
 SELECT 
-	c.id,
-	c.name,
-	COUNT(o.id) AS total_orders,
-	ROUND(SUM(o.amount), 2) AS total_revenue,
-	ROUND(AVG(o.amount), 2) AS average_order_value;
-FROM costumers c
-LEFT JOIN
+    c.id,
+    c.name,
+    COUNT(o.id) AS total_orders, -- counts how many orders each customer has
+    ROUND(SUM(o.amount), 2) AS total_revenue, -- sums the amount spent by each customer
+    ROUND(AVG(o.amount), 2) AS average_order_value -- calculates that customer's average order value
+FROM customers c
+LEFT JOIN orders o 
+    ON o.customer_id = c.id -- LEFT JOIN keeps the customer in the list even if they have no orders
+GROUP BY 
+    c.id, 
+    c.name -- groups by customer, so the functions above are calculated per customer
+ORDER BY 
+    total_revenue DESC NULLS LAST; -- orders from highest to lowest spend; customer with no orders (NULL) go last
+
+-- Days since each customer's last order (a preview of "Recency", formalised in Stage 4)
+SELECT
+    c.id,
+    c.name,
+    MAX(o.order_date) AS last_order, -- gets the date of the customer's most recent order
+    CURRENT_DATE - MAX(o.order_date) AS days_since_last_order -- calculate how many days have passed since then (corrigido order_data -> order_date)
+FROM customers c 
+JOIN orders o 
+    ON o.customer_id = c.id -- a plain JOIN here, since this only makes sense for customers who have orders
+GROUP BY 
+    c.id, 
+    c.name
+ORDER BY 
+    days_since_last_order DESC; -- orders from the most "gone quiet" customer to the most recent one
+
+-- Distribution of orders (useful for spotting outliers before any modelling)
+SELECT
+    total_orders,
+    COUNT(*) AS number_of_customers
+FROM (
+    SELECT 
+        customer_id, 
+        COUNT(*) AS total_orders
+    FROM orders
+    GROUP BY customer_id 
+) sub
+GROUP BY total_orders
+ORDER BY total_orders;
