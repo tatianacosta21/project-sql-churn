@@ -1,5 +1,16 @@
 -- STAGE 4: Calculating RFM (Recency, Frequency, Monetary)
 
+-- =====================================================================
+-- HOW THIS SOLUTION WORKS:
+-- RFM is a standard customer-analysis technique built from three numbers, calculated per customer from the "orders" table:
+--		- Recency:  how many days since their last order (lower = better)
+--		- Frequency: how many orders they have placed  (higher = better)
+--		- Monetary: how much they have spent in total  (higher = better)
+-- The CTE (WITH clause) below computes all three in a single pass over the data using standard aggregate functions (MAX, COUNT, SUM) grouped by customer. Keeping this logic in its own named CTE ("rfm_base") means later stages (5 and 6) can build directly on top of it instead of repeating the same GROUP BY logic every time.
+
+-- The second query below is a data-quality check: before turning these raw numbers into 1-5 scores (Stage 5), it is worth knowing the actual range of each metric, the same way an analyst would before deciding where to draw the cut-off points.
+-- =====================================================================
+
 WITH rfm_base AS (
     SELECT
         c.id AS customer_id,
@@ -24,8 +35,10 @@ SELECT
 FROM rfm_base
 ORDER BY monetary DESC;
 
+-- ---------------------------------------------------------------------------------------------------
+-- DATA-QUALITY CHECK: confirms the range of each RFM metric before any scoring is applied in Stage 5.
+-- ---------------------------------------------------------------------------------------------------
 
--- CHECK THE RANGE OF EACH RFM METRIC BEFORE SCORING
 WITH rfm_base AS (
     SELECT
         c.id AS customer_id,

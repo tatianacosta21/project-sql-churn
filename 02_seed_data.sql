@@ -1,5 +1,20 @@
 -- STAGE 2: Seed Data
 
+-- =====================================================================
+-- HOW THIS SOLUTION WORKS:
+-- Rather than writing dozens of manual INSERT statements, this script uses PostgreSQL's generate_series() function to generate rows programmatically. generate_series(1, 20) produces the numbers 1 to 20 as if they were rows in a table, and the SELECT around it uses each number to build one customer's name, email and signup date.
+-- The same idea is reused with CROSS JOIN to generate multiple orders per customer at once, instead of writing one INSERT per order.
+
+-- The 20 customers are deliberately split into four behavioural
+-- groups (5 customers each), each with a different order pattern:
+--   - Group 1 (ids 1-5): ACTIVE customers - frequent, recent orders
+--   - Group 2 (ids 6-10): AT RISK customers - used to order regularly, but stopped roughly 70 days ago
+--   - Group 3 (ids 11-15): LOST customers - last order was more than 180 days ago
+--   - Group 4 (ids 16-20): NEW customers - recent signup, only a handful of orders so far
+-- This is what gives the later RFM and churn-detection stages something meaningful to distinguish between — with random, unstructured data there would be nothing interesting to segment.
+-- =====================================================================
+
+
 -- 1. Insert 20 customers
 INSERT INTO customers (name, email, signup_date)
 SELECT
@@ -70,10 +85,12 @@ FROM customers c
 CROSS JOIN generate_series(0, 2) AS s -- 3 orders per customer
 WHERE c.id BETWEEN 16 AND 20;
 
---------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------
+-- VERIFICATION QUERY
+-- Confirms the four behavioural groups were seeded correctly.
+-- Run this separately, after the inserts above.
+-- --------------------------------------------------------------------------------------------------------------------
 
--- CHECKING WHETHER EVERYTHING WORKED
-/*
 SELECT
     customer_id, -- customer id
     COUNT(*) AS total_orders, -- counts how many orders this customer has
@@ -82,6 +99,3 @@ SELECT
 FROM orders
 GROUP BY customer_id -- groups orders by customer, so the functions above calculate per customer
 ORDER BY customer_id; -- orders the result by id, just to keep it tidy
-*/
-
---------------------------------------------------------------------------------------------------------------------

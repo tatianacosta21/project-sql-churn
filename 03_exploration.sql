@@ -1,5 +1,10 @@
 -- STAGE 3: Exploratory queries
 
+-- =====================================================================
+-- HOW THIS SOLUTION WORKS:
+-- Before building any RFM or churn logic, it is worth looking at the data the same way any analyst would when handed a new dataset: how much data is there, who is spending the most, and who has gone quiet. These four queries answer exactly that, and double as a sanity check that the seed data from Stage 2 was generated correctly (the four behavioural groups should be clearly visible in the results below).
+-- =====================================================================
+
 -- Overall volume: how many customers, orders, total revenue and average order value
 SELECT
     (SELECT COUNT(*) FROM customers) AS total_customers, -- counts how many customers exist in total
