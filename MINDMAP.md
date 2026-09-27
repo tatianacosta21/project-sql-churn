@@ -1,8 +1,65 @@
 # 🧠 Project Mind Map - Customer Segmentation & Churn Detection
 
-A one-page overview of how everything in this project connects, from
-the environment it runs in down to the SQL concepts each stage
-teaches.
+A one-page overview of how everything in this project connects, from the environment it runs in down to the SQL concepts each stage teaches.
+
+## Mermaid Flowchart
+
+```mermaid
+flowchart TD
+    classDef env fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e,font-weight:bold
+    classDef db fill:#fef3c7,stroke:#d97706,color:#78350f,font-weight:bold
+    classDef pipeline fill:#dcfce7,stroke:#16a34a,color:#14532d,font-weight:bold
+    classDef docs fill:#f3e8ff,stroke:#9333ea,color:#581c87,font-weight:bold
+
+    A["🐳 Docker + PostgreSQL"]:::env --> B["🛠️ DBeaver"]:::env
+    B --> C["📐 Stage 1<br/>Schema"]:::db
+    C --> D["🌱 Stage 2<br/>Seed Data"]:::db
+    D --> E["🔍 Stage 3<br/>Exploration"]:::pipeline
+    E --> F["📊 Stage 4<br/>RFM"]:::pipeline
+    F --> G["🏷️ Stage 5<br/>Segmentation"]:::pipeline
+    G --> H["⏳ Stage 6<br/>Churn Detection"]:::pipeline
+    H --> I["🧩 Stage 7<br/>Final View"]:::pipeline
+    I --> J["📄 README +<br/>EXERCISES"]:::docs
+    I --> K["🐙 GitHub Repo"]:::docs
+```
+
+##  Mermaid Mindmap
+
+```mermaid
+mindmap
+  root((SQL Project<br/>Customer Segmentation<br/>and Churn Detection))
+    Environment
+      Docker container: pg-churn
+      DBeaver SQL client
+      Git and GitHub
+    Database
+      customers table
+      orders table
+      Constraints: PK, FK, CHECK
+    Seed Data
+      Active customers
+      At risk customers
+      Lost customers
+      New customers
+    Analysis Pipeline
+      Stage 3: Exploration
+      Stage 4: RFM metrics
+      Stage 5: NTILE segmentation
+      Stage 6: LAG churn detection
+      Stage 7: Final VIEW
+    SQL Concepts
+      CTEs
+      Window functions
+      Aggregate functions
+      CASE logic
+      Views
+    Documentation
+      README
+      EXERCISES
+      MINDMAP
+```
+
+## Text version (ASCII tree)
 
 ```
 Customer Segmentation & Churn Detection (SQL Project)
