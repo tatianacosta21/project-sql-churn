@@ -1,11 +1,8 @@
 # 🧠 Customer Segmentation & Churn Detection
 
-**A pure-SQL analytics project built on PostgreSQL** — no BI tool, no
-Python, no dashboard. Every insight in this project — who your best
-customers are, and who is about to disappear — comes straight out of
-SQL queries running against a small relational database.
+**A pure-SQL analytics project built on PostgreSQL** - no BI tool, no Python, no dashboard. Every insight in this project - who your best customers are, and who is about to disappear - comes straight out of SQL queries running against a small relational database.
 
-✅ **Status: complete** — all 7 stages implemented and tested end to end.
+✅ **Status: complete** - all 7 stages implemented and tested end to end.
 
 ---
 
@@ -13,30 +10,11 @@ SQL queries running against a small relational database.
 
 ### 🎓 In technical terms
 
-This project models a minimal e-commerce domain (`customers` and
-`orders`, linked by a foreign key with referential integrity enforced
-at the database level) and builds an analytics layer on top of it
-entirely in SQL. It generates synthetic transactional data with
-`generate_series` across four distinct behavioural cohorts, then
-applies an RFM (Recency, Frequency, Monetary) framework using
-aggregate functions and CTEs, scores each customer with the `NTILE`
-window function, and detects churn dynamically with `LAG` by
-comparing each customer's current inactivity gap against their own
-historical order cadence — rather than against a single fixed
-threshold. The final stage consolidates the entire pipeline into a
-single reusable `VIEW`, ready to be queried by a BI tool exactly like
-a table.
+This project models a minimal e-commerce domain (`customers` and `orders`, linked by a foreign key with referential integrity enforced at the database level) and builds an analytics layer on top of it entirely in SQL. It generates synthetic transactional data with `generate_series` across four distinct behavioural cohorts, then applies an RFM (Recency, Frequency, Monetary) framework using aggregate functions and CTEs, scores each customer with the `NTILE` window function, and detects churn dynamically with `LAG` by comparing each customer's current inactivity gap against their own historical order cadence - rather than against a single fixed threshold. The final stage consolidates the entire pipeline into a single reusable `VIEW`, ready to be queried by a BI tool exactly like a table.
 
 ### 💬 In plain terms
 
-Imagine a small online shop with 20 customers. Some of them buy all
-the time, some used to buy regularly and have gone quiet, some
-haven't ordered in ages, and a few just signed up. This project uses
-only SQL — the language used to talk to databases — to figure out,
-automatically: how much has each customer spent, how often do they
-buy, when did they last show up, and based on all that, are they a
-loyal customer, someone worth a "we miss you" email, or already gone?
-No spreadsheets, no charts — just queries against a database.
+Imagine a small online shop with 20 customers. Some of them buy all the time, some used to buy regularly and have gone quiet, some haven't ordered in ages, and a few just signed up. This project uses only SQL - the language used to talk to databases - to figure out, automatically: how much has each customer spent, how often do they buy, when did they last show up, and based on all that, are they a loyal customer, someone worth a "we miss you" email, or already gone? No spreadsheets, no charts - just queries against a database.
 
 ---
 
@@ -74,34 +52,34 @@ A quick reference for the syntax and terms used throughout the scripts.
 
 **Table definition**
 
-- `SERIAL` — auto-incrementing integer column; PostgreSQL assigns the next number automatically on each insert.
-- `PRIMARY KEY` — marks a column as the unique identifier of each row.
-- `FOREIGN KEY` / `REFERENCES` — forces a column's value to match an existing id in another table, preventing orphan records.
-- `NOT NULL` — the column cannot be left empty.
-- `CHECK` — a custom validation rule enforced by the database itself (e.g. `CHECK (amount > 0)`).
-- `VARCHAR(n)` — variable-length text, up to `n` characters.
-- `NUMERIC(p, s)` — a fixed-precision decimal number with `p` total digits and `s` of them after the decimal point.
+- `SERIAL` - auto-incrementing integer column; PostgreSQL assigns the next number automatically on each insert.
+- `PRIMARY KEY` - marks a column as the unique identifier of each row.
+- `FOREIGN KEY` / `REFERENCES` - forces a column's value to match an existing id in another table, preventing orphan records.
+- `NOT NULL` - the column cannot be left empty.
+- `CHECK` - a custom validation rule enforced by the database itself (e.g. `CHECK (amount > 0)`).
+- `VARCHAR(n)` - variable-length text, up to `n` characters.
+- `NUMERIC(p, s)` - a fixed-precision decimal number with `p` total digits and `s` of them after the decimal point.
 
 **Data manipulation**
 
-- `INSERT INTO ... SELECT` — inserts rows generated by a query, instead of listing values manually.
-- `generate_series(a, b)` — generates a sequence of numbers from `a` to `b`, used here to create rows on the fly.
-- `CROSS JOIN` — pairs every row of one set with every row of another; combined with `generate_series` it multiplies each customer into several orders.
+- `INSERT INTO ... SELECT` - inserts rows generated by a query, instead of listing values manually.
+- `generate_series(a, b)` - generates a sequence of numbers from `a` to `b`, used here to create rows on the fly.
+- `CROSS JOIN` - pairs every row of one set with every row of another; combined with `generate_series` it multiplies each customer into several orders.
 
 **Querying and aggregation**
 
-- `JOIN` / `LEFT JOIN` — combines rows from two tables; `LEFT JOIN` keeps rows from the first table even with no match in the second.
-- `GROUP BY` — groups rows so aggregate functions (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) are calculated per group instead of over the whole table.
-- `WITH` (Common Table Expression / CTE) — names a sub-query so it can be reused later in the same statement, keeping complex logic readable.
-- `ORDER BY ... DESC/ASC` — sorts the result; `NULLS LAST` pushes empty values to the end.
-- `ROUND(value, n)` — rounds a number to `n` decimal places.
-- `INTERVAL '1 day'` — a span of time, used here to subtract days from `CURRENT_DATE`.
+- `JOIN` / `LEFT JOIN` - combines rows from two tables; `LEFT JOIN` keeps rows from the first table even with no match in the second.
+- `GROUP BY` - groups rows so aggregate functions (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) are calculated per group instead of over the whole table.
+- `WITH` (Common Table Expression / CTE) - names a sub-query so it can be reused later in the same statement, keeping complex logic readable.
+- `ORDER BY ... DESC/ASC` - sorts the result; `NULLS LAST` pushes empty values to the end.
+- `ROUND(value, n)` - rounds a number to `n` decimal places.
+- `INTERVAL '1 day'` - a span of time, used here to subtract days from `CURRENT_DATE`.
 
 **Business logic and analysis**
 
-- `CASE WHEN ... THEN ... ELSE ... END` — SQL's if/else, used to turn numeric scores into readable labels (e.g. "Champion", "At risk").
-- `NTILE(n) OVER (ORDER BY ...)` — a window function that splits ordered rows into `n` equally-sized buckets (used to turn raw RFM values into 1-5 scores).
-- `LAG(column) OVER (PARTITION BY ... ORDER BY ...)` — a window function that looks at the previous row's value within each group (used in Stage 6 for churn detection).
+- `CASE WHEN ... THEN ... ELSE ... END` - SQL's if/else, used to turn numeric scores into readable labels (e.g. "Champion", "At risk").
+- `NTILE(n) OVER (ORDER BY ...)` - a window function that splits ordered rows into `n` equally-sized buckets (used to turn raw RFM values into 1-5 scores).
+- `LAG(column) OVER (PARTITION BY ... ORDER BY ...)` - a window function that looks at the previous row's value within each group (used in Stage 6 for churn detection).
 
 ---
 
