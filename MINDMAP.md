@@ -29,24 +29,24 @@ flowchart TD
 mindmap
   root((SQL Project<br/>Customer Segmentation<br/>and Churn Detection))
     Environment
-      Docker container: pg-churn
+      Docker container pg-churn
       DBeaver SQL client
       Git and GitHub
     Database
       customers table
       orders table
-      Constraints: PK, FK, CHECK
+      Constraints PK FK CHECK
     Seed Data
       Active customers
       At risk customers
       Lost customers
       New customers
     Analysis Pipeline
-      Stage 3: Exploration
-      Stage 4: RFM metrics
-      Stage 5: NTILE segmentation
-      Stage 6: LAG churn detection
-      Stage 7: Final VIEW
+      Stage 3 Exploration
+      Stage 4 RFM metrics
+      Stage 5 NTILE segmentation
+      Stage 6 LAG churn detection
+      Stage 7 Final VIEW
     SQL Concepts
       CTEs
       Window functions
@@ -54,9 +54,9 @@ mindmap
       CASE logic
       Views
     Documentation
-      README
-      EXERCISES
-      MINDMAP
+      README file
+      Exercises worksheet
+      This diagram file
 ```
 
 ## Text version (ASCII tree)
