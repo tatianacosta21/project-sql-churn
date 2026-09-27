@@ -5,6 +5,8 @@ Python, no dashboard. Every insight in this project — who your best
 customers are, and who is about to disappear — comes straight out of
 SQL queries running against a small relational database.
 
+✅ **Status: complete** — all 7 stages implemented and tested end to end.
+
 ---
 
 ## 📖 What this project is
